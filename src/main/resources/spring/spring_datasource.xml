@@ -40,7 +40,7 @@
 		<property name="username" value="${jdbc.username_write}" />
 		<property name="password" value="${jdbc.pwd_write}" />
 	</bean>
-	<bean id="productDataSource" class="com.jee4a.mysql.common.datasource.DynamicDataSource">
+	<bean id="productDataSource" class="com.jee4a.common.datasource.DynamicDataSource">
 		<property name="targetDataSources">
 			<map key-type="java.lang.String"><!-- write -->
 				<entry key="write" value-ref="writeDS" /><!-- read -->
@@ -51,22 +51,47 @@
 	</bean>
 	<bean id="productSqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
 		<property name="dataSource" ref="productDataSource" />
-		<property name="mapperLocations" value="classpath*:sqlmap/*.xml" />
+		<property name="mapperLocations" value="classpath*:sqlmap/product/*.xml" />
 	</bean>
 	<bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
 		<property name="sqlSessionFactoryBeanName" value="productSqlSessionFactory" />
-		<property name="basePackage" value="com.jee4a.mysql.common.mapper" />
+		<property name="basePackage" value="com.jee4a.common.mapper.product" />
 	</bean>
 	<tx:annotation-driven transaction-manager="transactionManager" />
 	<bean id="transactionManager"
 		class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
 		<property name="dataSource" ref="productDataSource" />
 	</bean>
-	<bean id="dataSourceAspect" class="com.jee4a.mysql.common.datasource.DataSourceAspect" />
+	
+	
+	<bean id="dataSourceAspect" class="com.jee4a.common.datasource.DataSourceAspect" />
 	<aop:config proxy-target-class="true">
 		<aop:aspect id="dataSourceAspect" ref="dataSourceAspect" order="1">
-			<aop:pointcut id="tx" expression="execution(* com.jee4a.mysql.manager.*.*(..)) " />
+			<aop:pointcut id="tx" expression="execution(* com.jee4a.mysql.manager.proudct.*.*(..)) " />
 			<aop:before pointcut-ref="tx" method="before" />
 		</aop:aspect>
 	</aop:config>
+	
+	
+	<bean id="orderDS" class="com.alibaba.druid.pool.DruidDataSource"
+ 		parent="baseDS">
+ 		<property name="url" value="${jdbc.url_order}" />
+ 		<property name="username" value="${jdbc.username_order}" />
+ 		<property name="password" value="${jdbc.pwd_order}" />
+ 	</bean>
+ 	<bean id="orderSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+ 		<property name="dataSource" ref="orderDS" />
+ 		<property name="mapperLocations" value="classpath*:sqlmap/order/*.xml" />
+ 	</bean>
+ 	<bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+ 		<property name="sqlSessionFactoryBeanName" value="orderSessionFactory" />
+ 		<property name="basePackage" value="com.jee4a.common.mapper.order" />
+ 	</bean>
+ 	
+ 	<tx:annotation-driven transaction-manager="orderTransactionManager" />
+ 	<!-- 事务管理器 -->
+ 	<bean id="orderTransactionManager"
+ 		class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+ 		<property name="dataSource" ref="orderDS" />
+ 	</bean>
 </beans>
