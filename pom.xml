@@ -23,7 +23,7 @@
 		<org.mybatis.version>3.4.5</org.mybatis.version>
 		<org.slf4j-version>1.7.25</org.slf4j-version>
 		<log4j.version>1.2.17</log4j.version>
-		<dubbo.version>2.5.8</dubbo.version>
+		<dubbo.version>2.6.12</dubbo.version>
 	</properties>
 	 
 	<dependencies>
